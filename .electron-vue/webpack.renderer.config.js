@@ -35,14 +35,21 @@ let rendererConfig = {
       {
         test: /\.(js|vue)$/,
         enforce: 'pre',
-        exclude: /node_modules/
-        // ,
-        // use: {
-        //   loader: 'eslint-loader',
-        //   options: {
-        //     formatter: require('eslint-friendly-formatter')
-        //   }
-        // }
+        exclude: /node_modules/,
+        use: {
+          loader: 'eslint-loader',
+          options: {
+            formatter: require('eslint-friendly-formatter')
+          }
+        }
+      },
+      {
+        test: /\.styl$/,
+        use: ['vue-style-loader', 'css-loader', 'stylus-loader']
+      },
+      {
+        test: /\.stylus$/,
+        use: ['vue-style-loader', 'css-loader', 'stylus-loader']
       },
       {
         test: /\.scss$/,
@@ -80,6 +87,7 @@ let rendererConfig = {
           options: {
             extractCSS: process.env.NODE_ENV === 'production',
             loaders: {
+              stylus: 'vue-style-loader!css-loader!stylus-loader',
               sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax=1',
               scss: 'vue-style-loader!css-loader!sass-loader',
               less: 'vue-style-loader!css-loader!less-loader'

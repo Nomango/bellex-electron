@@ -10,19 +10,19 @@
 <script>
 export default {
   watch: {
-    filterText(val) {
+    filterText (val) {
       this.$refs.tree2.filter(val)
     }
   },
 
   methods: {
-    filterNode(value, data) {
+    filterNode (value, data) {
       if (!value) return true
       return data.label.indexOf(value) !== -1
     }
   },
 
-  data() {
+  data () {
     return {
       filterText: '',
       data2: [{

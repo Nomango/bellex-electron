@@ -11,13 +11,13 @@ const delta = 15
 
 export default {
   name: 'scrollBar',
-  data() {
+  data () {
     return {
       top: 0
     }
   },
   methods: {
-    handleScroll(e) {
+    handleScroll (e) {
       const eventDelta = e.wheelDelta || -e.deltaY * 3
       const $container = this.$refs.scrollContainer
       const $containerHeight = $container.offsetHeight
