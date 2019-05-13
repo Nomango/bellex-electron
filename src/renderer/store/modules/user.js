@@ -11,8 +11,11 @@ const user = {
     SET_TOKEN: (state, token) => {
       state.token = token
     },
-    SET_USERINFO: (state, userInfo) => {
-      state.userInfo = userInfo
+    SET_NICKNAME: (state, name) => {
+      state.userInfo.nickname = name
+    },
+    SET_USERINFO: (state, user) => {
+      state.userInfo = user
     }
   },
 
@@ -63,6 +66,19 @@ const user = {
         removeToken()
         commit('SET_TOKEN', '')
         resolve()
+      })
+    },
+
+    userStatus ({ commit }) {
+      return new Promise((resolve, reject) => {
+        userAjax.getUserStatus()
+          .then(response => {
+            const { data } = response
+            commit('SET_USERINFO', data.user)
+            resolve(data.user.role)
+          }).catch(error => {
+            reject(error)
+          })
       })
     }
   }

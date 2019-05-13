@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 /* Layout */
-import Layout from '../views/layout/Layout'
+import Layout from '../views/layout/layout'
 
 // in development-env not use lazy-loading, because lazy-loading too many pages will cause webpack hot update too slow. so only in production use lazy-loading;
 // detail: https://panjiachen.github.io/vue-element-admin-site/#/lazy-loading
@@ -27,49 +27,35 @@ export const constantRouterMap = [
 
   {
     path: '/',
+    name: 'Home',
     component: Layout,
-    redirect: '/dashboard',
-    name: 'Dashboard',
+    redirect: '/home/mainControl',
     hidden: true,
     children: [{
-      path: 'dashboard',
-      component: () => import('@/views/dashboard/index')
+      path: '/home/building',
+      component: () => import('@/views/Building/index.vue')
+    }, {
+      path: '/home/mainControl',
+      component: () => import('@/views/dashboard/index.vue')
+    }, {
+      path: '/home/set',
+      component: () => import('@/views/set/set.vue')
+    }, {
+      path: '/home/profile',
+      component: () => import('@/views/set/profile.vue')
+    }, {
+      path: '/home/tableDetail',
+      name: 'tableDetail',
+      component: () => import('@/views/tableDetail/index.vue')
+    }, {
+      path: '/home/userManage',
+      name: 'userManage',
+      component: () => import('@/views/userManage/index.vue')
+    }, {
+      path: '/home/institution',
+      name: 'institution',
+      component: () => import('@/views/userManage/institution.vue')
     }]
-  },
-
-  {
-    path: '/example',
-    component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'example' },
-    children: [
-      {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
-      },
-      {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
-      }
-    ]
-  },
-
-  {
-    path: '/form',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
-      }
-    ]
   },
 
   { path: '*', redirect: '/404', hidden: true }
