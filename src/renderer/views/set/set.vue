@@ -36,11 +36,11 @@ export default {
   data () {
     var validateOncePass = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('请再次输入密码'));
+        callback(new Error('请再次输入密码'))
       } else if (value !== this.form.password) {
-        callback(new Error('两次输入密码不一致!'));
+        callback(new Error('两次输入密码不一致!'))
       } else {
-        callback();
+        callback()
       }
     }
     return {
@@ -78,7 +78,7 @@ export default {
       })
     },
     resetForm () {
-      this.$refs['setForm'].resetFields();
+      this.$refs['setForm'].resetFields()
     },
     showMsg (type, msg) {
       this.$message({

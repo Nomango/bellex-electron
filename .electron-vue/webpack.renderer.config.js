@@ -20,7 +20,7 @@ const { VueLoaderPlugin } = require('vue-loader')
  * that provide pure *.vue files that need compiling
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/webpack-configurations.html#white-listing-externals
  */
-let whiteListedModules = ['vue']
+let whiteListedModules = ['vue', 'element-ui']
 
 let rendererConfig = {
   devtool: '#cheap-module-eval-source-map',
@@ -97,7 +97,16 @@ let rendererConfig = {
         }
       },
       {
+        test: /\.svg$/,
+        loader: 'svg-sprite-loader',
+        include: [path.join(__dirname, '../src/renderer/icons')],
+        options: {
+          symbolId: 'icon-[name]'
+        }
+      },
+      {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+        exclude: [path.join(__dirname, '../src/renderer/icons')],
         use: {
           loader: 'url-loader',
           query: {

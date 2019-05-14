@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
 import store from '../store'
+import NProgress from 'nprogress'
 
 // 创建axios实例
 const service = axios.create({
@@ -10,6 +11,7 @@ const service = axios.create({
 
 // request拦截器
 service.interceptors.request.use(config => {
+  NProgress.start()
   if (store.getters.token) {
     config.headers['X-Token'] = store.getters.token// 让每个请求携带自定义token 请根据实际情况自行修改
   }
@@ -23,9 +25,11 @@ service.interceptors.request.use(config => {
 // respone拦截器
 service.interceptors.response.use(
   response => {
+    NProgress.done()
     return response.data
   },
   error => {
+    NProgress.done()
     console.log('err ' + error)// for debug
     if (error.response) {
       Message.error({

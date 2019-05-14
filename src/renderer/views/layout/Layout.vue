@@ -1,10 +1,5 @@
 <template>
-  <div
-    class="home-wrapper"
-    v-loading="ajaxLoading"
-    element-loading-text="拼命加载中"
-    element-loading-spinner="el-icon-loading"
-    element-loading-background="rgba(0, 0, 0, 0.2)">
+  <div class="home-wrapper">
     <bell-header />
     <bell-menu />
     <bell-body>
@@ -17,7 +12,6 @@
 import bellHeader from './components/bellHeader'
 import bellMenu from './components/bellMenu'
 import bellBody from './components/bellContent'
-import { mapState } from 'vuex'
 export default {
   name: 'home',
   components: {
@@ -28,9 +22,6 @@ export default {
   data () {
     return {
     }
-  },
-  computed: {
-    ...mapState(['ajaxLoading'])
   },
   created () {
   },

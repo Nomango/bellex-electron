@@ -1,5 +1,5 @@
 <template>
-  <div class="bell-header" :class="{'isCollapse': isCollapse}">
+  <div class="bell-header" :class="{'isCollapse': sidebar}">
     <div class="bell-nav bell-layout-left">
       <span class="bell-nav-item" @click="handleChangeCollapse">
         <i class="iconfont" :class="isShousuo" />
@@ -26,7 +26,7 @@
   </div>
 </template>
 <script>
-import { mapMutations, mapState, mapGetters } from 'vuex'
+import { mapMutations, mapGetters, mapActions } from 'vuex'
 import loginAjax from '@/api/login.js'
 export default {
   data () {
@@ -35,14 +35,13 @@ export default {
     }
   },
   computed: {
-    ...mapState(['isCollapse']),
-    ...mapGetters(['userInfo']),
+    ...mapGetters(['sidebar', 'userInfo']),
     isShousuo () {
-      return this.isCollapse ? 'icon-zhankai' : 'icon-shousuo'
+      return this.sidebar ? 'icon-zhankai' : 'icon-shousuo'
     }
   },
   methods: {
-    ...mapMutations(['changeCollapse']),
+    ...mapActions(['ToggleSidebar']),
     handleLogOut () {
       loginAjax.logout()
         .then(res => {
@@ -67,7 +66,7 @@ export default {
       }
     },
     handleChangeCollapse () {
-      this.changeCollapse()
+      this.ToggleSidebar()
     }
   }
 }

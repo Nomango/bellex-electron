@@ -294,7 +294,7 @@ export default {
     },
     resetForm () {
       this.$nextTick(() => {
-        this.$refs['subUserForm'].clearValidate();
+        this.$refs['subUserForm'].clearValidate()
       })
     },
     showMsg (type, msg) {

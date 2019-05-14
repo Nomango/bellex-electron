@@ -27,10 +27,14 @@ router.beforeEach((to, from, next) => {
     }
   } else {
     if (whiteList.indexOf(to.path) !== -1) {
-      next()
+      store.dispatch('LogOut').then(res => {
+        next()
+      })
     } else {
-      next('/login')
-      NProgress.done()
+      store.dispatch('LogOut').then(res => {
+        next('/login')
+        NProgress.done()
+      })
     }
   }
 })

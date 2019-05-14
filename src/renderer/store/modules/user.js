@@ -49,9 +49,8 @@ const user = {
     // 登出
     LogOut ({ commit, state }) {
       return new Promise((resolve, reject) => {
-        logout(state.token).then(() => {
+        logout().then(() => {
           commit('SET_TOKEN', '')
-          commit('SET_ROLES', [])
           removeToken()
           resolve()
         }).catch(error => {
@@ -66,19 +65,6 @@ const user = {
         removeToken()
         commit('SET_TOKEN', '')
         resolve()
-      })
-    },
-
-    userStatus ({ commit }) {
-      return new Promise((resolve, reject) => {
-        userAjax.getUserStatus()
-          .then(response => {
-            const { data } = response
-            commit('SET_USERINFO', data.user)
-            resolve(data.user.role)
-          }).catch(error => {
-            reject(error)
-          })
       })
     }
   }

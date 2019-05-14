@@ -248,13 +248,13 @@ export default {
       }
     },
     handleCloseTag (tag) {
-      this.timeForm.list.splice(this.timeForm.list.indexOf(tag), 1);
+      this.timeForm.list.splice(this.timeForm.list.indexOf(tag), 1)
     },
     showTimepicker () {
       this.timeVisible = true
-      this.$nextTick(_ => {
+      this.$nextTick(() => {
         this.$refs.saveTagInput.focus()
-      });
+      })
     },
     handlePickerConfirm () {
       let timeValue = this.timeValue

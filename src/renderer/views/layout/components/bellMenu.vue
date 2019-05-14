@@ -1,11 +1,12 @@
 <template>
-  <div class="bell-side bell-side-menu" :class="{'isHideMenu': isCollapse}">
+  <div class="bell-side bell-side-menu" :class="{'isHideMenu': sidebar}">
     <div class="bell-logo">
+      <img v-show="sidebar" :src="logoUrl" alt="logo">
       <span v-if="userInfo && userInfo.institution">{{userInfo.institution.name}}</span>
     </div>
     <el-menu
       :default-active="defaultActive"
-      :collapse="isCollapse"
+      :collapse="sidebar"
       :unique-opened="true"
       class="el-menu-vertical-demo"
       @select="handleSelect"
@@ -20,26 +21,28 @@
           <i class="iconfont" :class="item.icon" />
           <span>{{item.name}}</span>
         </template>
-        <el-menu-item
-          v-if="item.children && item.children.length"
-          v-for="(subItem,index) of item.children"
-          :key="index"
-          :index="subItem.index">
-          {{subItem.name}}
-        </el-menu-item>
+        <template v-if="item.children && item.children.length">
+          <el-menu-item
+            v-for="(subItem,index) of item.children"
+            :key="index"
+            :index="subItem.index">
+            {{subItem.name}}
+          </el-menu-item>
+        </template>
       </el-submenu>
     </el-menu>
   </div>
 </template>
 <script>
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 export default {
   computed: {
-    ...mapState(['isCollapse', 'userInfo', 'roles'])
+    ...mapGetters(['sidebar', 'userInfo'])
   },
   data () {
     return {
       defaultActive: this.$route.path || '/home/mainControl',
+      logoUrl: require('@/assets/logo.png'),
       roleMenu: null,
       menuList: [{
         id: '1',
@@ -84,7 +87,7 @@ export default {
   },
   methods: {
     handleRoleMenu () {
-      if (this.roles === 0) {
+      if (this.userInfo.role === 0) {
         let newMenuArr = Object.assign([], this.menuList)
         newMenuArr.splice(1, 1)
         this.roleMenu = newMenuArr
@@ -102,7 +105,7 @@ export default {
     $route (newVal, oVal) {
       this.defaultActive = newVal.path
     },
-    'roles' (newVal, oVal) {
+    'userInfo.role' (newVal, oVal) {
       if (newVal) {
         this.roleMenu = this.menuList
       } else {
@@ -149,8 +152,10 @@ export default {
     width 64px
     .bell-logo
       width: 60px;
-      background: url('/assets/imgs/logo1.png') no-repeat;
-      background-position: center;
+      margin 0 auto
+      img
+        width: 30px
+        vertical-align: middle;
       span
         display none
   &.bell-side-menu

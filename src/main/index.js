@@ -22,6 +22,7 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     width: 1000,
     height: 563,
+    title: '智铃校园后台管理系统',
     useContentSize: true,
     webPreferences: {
       webSecurity: false

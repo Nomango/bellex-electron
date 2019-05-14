@@ -1,15 +1,15 @@
 <template>
-  <div class="bell-body" :class="{'isCollapse': isCollapse}">
+  <div class="bell-body" :class="{'isCollapse': sidebar}">
     <div class="bell-content bell-show">
       <slot name="bellcontent"></slot>
     </div>
   </div>
 </template>
 <script>
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 export default {
   computed: {
-    ...mapState(['isCollapse'])
+    ...mapGetters(['sidebar'])
   },
   data () {
     return {
@@ -34,6 +34,7 @@ export default {
   box-sizing border-box
   &.isCollapse
     left 64px
+    width calc(100vw - 64px)
   .bell-content
     position: absolute;
     top: 0;
