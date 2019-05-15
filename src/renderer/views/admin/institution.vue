@@ -180,7 +180,7 @@ export default {
           name: this.instForm.name
         })
           .then(res => {
-            if (this.institution && this.instId == this.institution.id) {
+            if (this.institution && this.instId === this.institution.id) {
               this.institution.name = this.instForm.name
               this.SET_INSTITUTION(this.institution)
             }

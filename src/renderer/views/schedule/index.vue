@@ -311,8 +311,9 @@ export default {
           opacity .8
     .el-button--small
       padding: 0 9.2px;
-  .el-tag + .el-tag
-    margin-left: 10px;
+  .el-tag
+    margin-right: 10px;
+    margin-bottom: 5px;
   .button-new-tag
     height: 32px;
     line-height: 30px;
