@@ -1,4 +1,4 @@
-import Cookies from 'js-cookie'
+// import Cookies from 'js-cookie'
 
 const app = {
   state: {
@@ -14,10 +14,14 @@ const app = {
     }
   },
   actions: {
-    ToggleDevice ({ commit }, device) {
+    ToggleDevice ({
+      commit
+    }, device) {
       commit('TOGGLE_DEVICE', device)
     },
-    ToggleSidebar ({ commit }) {
+    ToggleSidebar ({
+      commit
+    }) {
       commit('CHANGE_COLLAPSE')
     }
   }

@@ -26,7 +26,7 @@
   </div>
 </template>
 <script>
-import { mapMutations, mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import loginAjax from '@/api/login.js'
 export default {
   data () {
