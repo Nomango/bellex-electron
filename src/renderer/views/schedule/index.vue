@@ -1,32 +1,31 @@
 <template>
-  <div class="institution-wrapper">
+  <div class="build-wrapper">
     <bell-card>
       <div class="card-header-content" slot="card-header">
         <el-button @click="addTableClick" type="success">添加</el-button>
       </div>
       <div class="card-content-body" slot="card-content">
           <el-table
-            :data="institutionLists"
+            :data="timeLists"
             stripe
             border
             style="width: 100%">
           <el-table-column
             prop="name"
             label="名称"
-            align="center"
             width="" />
-          <el-table-column
-            prop="create_time"
-            label="创建时间"
-            align="center"
-            width="" />
+          <el-table-column label="时间"  width="">
+            <template slot-scope="{row}">
+              <el-tag v-for="itemTime of row.list" :key="itemTime.id" type="success">{{itemTime}}</el-tag>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="address"
             label="操作"
             align="center"
             width="200">
             <template slot-scope="scope">
-              <el-button @click="handleEdit(scope.row)" icon="el-icon-edit" size="mini">编辑</el-button>
+              <el-button @click="handleCheck(scope.row)" icon="el-icon-edit" size="mini">编辑</el-button>
               <el-button @click="handleDelete(scope.row)" icon="el-icon-delete" type="danger" size="mini">删除</el-button>
             </template>
           </el-table-column>
@@ -52,6 +51,38 @@
                 <el-form-item label="名称: ">
                   <el-input v-model="timeForm.name"></el-input>
                 </el-form-item>
+                <el-form-item label="时间表: ">
+                  <div class="time-wrapper">
+                    <template v-if="timeForm.list.length">
+                      <el-tag
+                        :key="tag"
+                        v-for="tag in timeForm.list"
+                        closable
+                        :disable-transitions="true"
+                        @close="handleCloseTag(tag)">
+                        {{tag}}
+                      </el-tag>
+                    </template>
+                  </div>
+                  
+                  <el-time-picker
+                    v-if="timeVisible"
+                    class="input-new-tag"
+                    v-model="timeValue"
+                    format="HH:mm"
+                    :picker-options="{
+                      selectableRange: '00:00:00 - 23:59:59'
+                    }"
+                    placeholder="请选择时间"
+                    ref="saveTagInput"
+                    @keyup.enter.native="handlePickerConfirm"
+                    @blur="handlePickerConfirm" />
+                  <el-button
+                    v-else
+                    class="button-new-tag"
+                    icon="iconfont icon-add"
+                    size="small" @click="showTimepicker">添加时间</el-button>
+                </el-form-item>
                 <el-form-item class="footer-item">
                   <el-button type="primary" @click="clickStatus==='create'? createData() : updateData()">确定</el-button>
                 </el-form-item>
@@ -66,9 +97,9 @@
 <script>
 import bellCard from '@/views/common/card/card'
 import bellPagination from '@/views/common/pagination/pagination'
-import addDialog from '@/views/common/dialog/addDialog'
+import addDialog from '@/views/common/dialog/add'
 import { translateTime } from '@/utils/tools.js'
-import institutionAjax from '@/api/institution.js'
+import timeAjax from '@/api/time.js'
 export default {
   components: {
     bellCard,
@@ -79,6 +110,7 @@ export default {
     return {
       timeVisible: false,
       timeValue: '',
+      buildingDialog: false,
       addDialog: false,
       currentPage: 1,
       totalPage: 0,
@@ -92,10 +124,11 @@ export default {
       },
       clickStatus: null,
       timeForm: {
-        name: ''
+        name: '',
+        list: []
       },
       timeId: null,
-      institutionLists: []
+      timeLists: []
     }
   },
   created () {
@@ -103,51 +136,59 @@ export default {
   },
   methods: {
     getTimeData () {
-      institutionAjax.getInstitutionList({
+      timeAjax.getTimeList({
         page: this.currentPage,
         limit: this.pageSizes.size
       })
         .then(res => {
+          console.log('time', res)
+          this.handleTimeData(res.data)
           this.totalPage = res.total
-          this.handleResData(res.data)
         })
         .catch(err => {
           console.log(err)
         })
     },
-    handleResData (res) {
-      this.institutionLists = res.map(item => {
+    handleTimeData (res) {
+      let result = res.map(item => {
         return {
-          create_time: translateTime(item.create_time).all,
           id: item.id,
-          name: item.name
+          name: item.name,
+          list: item.content.split(' ')
         }
       })
+      console.log('result', result)
+      this.timeLists = result
     },
-    handleEdit (row) {
+    handleCheck (row) {
+      console.log('handleCheck', row)
       this.timeForm = Object.assign({}, row)
       this.clickStatus = 'update'
       this.addDialog = true
       this.timeId = row.id
     },
     handleSizeChange (val) {
+      console.log('handleSizeChange', val)
       this.pageSizes.size = val
       this.getTimeData()
     },
     handleCurrentChange (val) {
+      console.log('handleCurrentChange', val)
       this.currentPage = val
       this.getTimeData()
     },
     handleDelete (val) {
-      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+      console.log('delete', val)
+      this.$confirm('确认要删除该时间表吗?', '删除确认', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        institutionAjax.delInstitutionList({
+        timeAjax.delTimeList({
           id: val.id
         })
           .then(res => {
+            console.log('del', res)
             this.showMsg('success', '删除成功!')
             this.getTimeData()
           })
@@ -155,7 +196,6 @@ export default {
             console.log(err)
           })
       }).catch(() => {
-        this.showMsg('info', '已取消删除')
       })
     },
     handleAddCancel (val) {
@@ -171,10 +211,12 @@ export default {
     },
     updateData () {
       let timeForm = this.timeForm
-      if (timeForm.name) {
-        institutionAjax.putInstitutionList({
+      if (timeForm.name && timeForm.list.length) {
+        let timeArr = timeForm.list.join(' ')
+        timeAjax.putTimeList({
           id: this.timeId,
-          name: timeForm.name
+          name: timeForm.name,
+          content: timeArr
         })
           .then(res => {
             this.addDialog = false
@@ -188,20 +230,22 @@ export default {
     },
     createData () {
       let timeForm = this.timeForm
-      if (timeForm.name) {
-        institutionAjax.addInstitutionList({
-          name: timeForm.name
+      if (timeForm.name && timeForm.list.length) {
+        let timeArr = timeForm.list.join(' ')
+        timeAjax.addTimeList({
+          name: timeForm.name,
+          content: timeArr
         })
           .then(res => {
-            this.addDialog = false
-            this.showMsg('success', '添加成功')
-            this.getTimeData()
+            if (res.status === 200) {
+              this.addDialog = false
+              this.showMsg('success', '添加成功')
+              this.getTimeData()
+            }
           })
           .catch(err => {
             console.log(err)
           })
-      } else {
-        this.showMsg('warning', '请输入名称')
       }
     },
     handleCloseTag (tag) {
@@ -209,7 +253,7 @@ export default {
     },
     showTimepicker () {
       this.timeVisible = true
-      this.$nextTick(_ => {
+      this.$nextTick(() => {
         this.$refs.saveTagInput.focus()
       })
     },
@@ -242,7 +286,7 @@ export default {
 }
 </script>
 <style lang="stylus">
-.institution-wrapper
+.build-wrapper
   .el-button--success
     background-color: #009688;
     border-color #009688
@@ -286,7 +330,7 @@ export default {
       line-height: 30px;
 </style>
 <style lang='stylus' scoped>
-.institution-wrapper
+.build-wrapper
   position: relative;
   min-height 100%
   height auto

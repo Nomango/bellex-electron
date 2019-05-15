@@ -29,32 +29,26 @@ export const constantRouterMap = [
     path: '/',
     name: 'Home',
     component: Layout,
-    redirect: '/home/mainControl',
+    redirect: '/dashboard/mechine',
     hidden: true,
     children: [{
-      path: '/home/building',
-      component: () => import('@/views/Building/index.vue')
-    }, {
-      path: '/home/mainControl',
+      path: '/dashboard/mechine',
       component: () => import('@/views/dashboard/index.vue')
     }, {
-      path: '/home/set',
-      component: () => import('@/views/set/set.vue')
+      path: '/dashboard/schedule',
+      component: () => import('@/views/schedule/index.vue')
     }, {
-      path: '/home/profile',
-      component: () => import('@/views/set/profile.vue')
+      path: '/user/update/password',
+      component: () => import('@/views/user/password.vue')
     }, {
-      path: '/home/tableDetail',
-      name: 'tableDetail',
-      component: () => import('@/views/tableDetail/index.vue')
+      path: '/user/update/profile',
+      component: () => import('@/views/user/profile.vue')
     }, {
-      path: '/home/userManage',
-      name: 'userManage',
-      component: () => import('@/views/userManage/index.vue')
+      path: '/admin/user',
+      component: () => import('@/views/admin/user.vue')
     }, {
-      path: '/home/institution',
-      name: 'institution',
-      component: () => import('@/views/userManage/institution.vue')
+      path: '/admin/institution',
+      component: () => import('@/views/admin/institution.vue')
     }]
   },
 

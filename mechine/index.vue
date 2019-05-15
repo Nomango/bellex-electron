@@ -1,5 +1,5 @@
 <template>
-  <div class="tableDetail-wrapper">
+  <div class="mechine-detail-wrapper">
     <bell-card>
       <div class="card-header-content" slot="card-header">
         <el-button type="success" @click="handleBack">返回</el-button>
@@ -9,7 +9,7 @@
           <el-form-item label="名称">
             <el-input v-model="detailForm.name"></el-input>
           </el-form-item>
-          <el-form-item label="识别码">
+          <el-form-item label="序列号">
             <el-input v-model="detailForm.code"></el-input>
           </el-form-item>
           <el-form-item label="密码">
@@ -47,10 +47,10 @@ export default {
     }
   },
   created () {
-    this.getdetailData()
+    this.getDetails()
   },
   methods: {
-    getdetailData () {
+    getDetails () {
       homeAjax.getControllers({})
         .then(res => {
           if (res.code === 0) {
@@ -67,13 +67,13 @@ export default {
       this.$router.go(-1)
     },
     onSubmit () {
-      console.log('sss')
+      console.log('submit')
     }
   }
 }
 </script>
 <style lang="stylus">
-.tableDetail-wrapper
+.mechine-detail-wrapper
   .el-button--success
     background-color: #009688;
     border-color #009688
@@ -93,7 +93,7 @@ export default {
         opacity .8
 </style>
 <style lang='stylus' scoped>
-.tableDetail-wrapper
+.mechine-detail-wrapper
   position: relative;
   height 100%
   margin: 0 auto;

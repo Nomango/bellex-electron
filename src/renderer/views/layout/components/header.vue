@@ -12,10 +12,10 @@
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item icon="">
-            <router-link to="/home/profile">基本资料</router-link>
+            <router-link to="/user/update/profile">基本资料</router-link>
           </el-dropdown-item>
           <el-dropdown-item icon="">
-            <router-link to="/home/set">修改密码</router-link>
+            <router-link to="/user/update/password">修改密码</router-link>
           </el-dropdown-item>
           <el-dropdown-item icon="">
             <span class="dropdown-span" @click="handleLogOut">退出</span>

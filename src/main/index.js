@@ -20,8 +20,8 @@ function createWindow () {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    width: 1000,
-    height: 563,
+    width: 1200,
+    height: 700,
     title: '智铃校园后台管理系统',
     useContentSize: true,
     webPreferences: {

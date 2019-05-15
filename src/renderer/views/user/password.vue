@@ -11,7 +11,7 @@
           </el-form-item>
           <el-form-item label="新密码" prop="password">
             <el-input v-model="form.password" type="password" />
-            <span class="form-word-aux">6到16个字符</span>
+            <span class="form-word-aux">4到16个字符</span>
           </el-form-item>
           <el-form-item label="确认新密码" prop="confirmPsd">
             <el-input v-model="form.confirmPsd" type="password" @keyup.enter.native="onSubmit"/>
@@ -52,7 +52,7 @@ export default {
       rules: {
         old_password: [
           { required: true, message: '请输入当前密码', trigger: 'blur' },
-          { min: 6, max: 16, message: '长度在 6 到 16 个字符', trigger: 'blur' }
+          { min: 4, max: 16, message: '长度在 4 到 16 个字符', trigger: 'blur' }
         ],
         password: [{ required: true, message: '请输入新密码', trigger: 'blur' }],
         confirmPsd: [{ required: true, validator: validateOncePass, trigger: 'blur' }]
@@ -66,7 +66,7 @@ export default {
           loginAjax.resetPsd(this.form)
             .then(res => {
               this.resetForm()
-              this.showMsg('success', '修改成功 ^_^')
+              this.showMsg('success', '修改成功')
             })
             .catch(err => {
               console.log('err', err)

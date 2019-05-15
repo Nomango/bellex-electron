@@ -1,7 +1,7 @@
 <template>
   <div class="bell-body" :class="{'isCollapse': sidebar}">
     <div class="bell-content bell-show">
-      <slot name="bellcontent"></slot>
+      <slot name="layout-body-slot"></slot>
     </div>
   </div>
 </template>

@@ -1,31 +1,32 @@
 <template>
-  <div class="build-wrapper">
+  <div class="institution-wrapper">
     <bell-card>
       <div class="card-header-content" slot="card-header">
         <el-button @click="addTableClick" type="success">添加</el-button>
       </div>
       <div class="card-content-body" slot="card-content">
           <el-table
-            :data="timeLists"
+            :data="institutionLists"
             stripe
             border
             style="width: 100%">
           <el-table-column
             prop="name"
             label="名称"
+            align="center"
             width="" />
-          <el-table-column label="时间"  width="">
-            <template slot-scope="{row}">
-              <el-tag v-for="itemTime of row.list" :key="itemTime.id" type="success">{{itemTime}}</el-tag>
-            </template>
-          </el-table-column>
+          <el-table-column
+            prop="create_time"
+            label="创建时间"
+            align="center"
+            width="" />
           <el-table-column
             prop="address"
             label="操作"
             align="center"
             width="200">
             <template slot-scope="scope">
-              <el-button @click="handleCheck(scope.row)" icon="el-icon-edit" size="mini">编辑</el-button>
+              <el-button @click="handleEdit(scope.row)" icon="el-icon-edit" size="mini">编辑</el-button>
               <el-button @click="handleDelete(scope.row)" icon="el-icon-delete" type="danger" size="mini">删除</el-button>
             </template>
           </el-table-column>
@@ -47,39 +48,9 @@
             @cancel="handleAddCancel"
             @confirm="handleAddConfirm">
             <div class="content" slot="content">
-              <el-form ref="timeForm" :model="timeForm" label-width="80px">
+              <el-form ref="instForm" :model="instForm" label-width="80px">
                 <el-form-item label="名称: ">
-                  <el-input v-model="timeForm.name"></el-input>
-                </el-form-item>
-                <el-form-item label="时间表: ">
-                  <div class="time-wrapper">
-                    <el-tag
-                      v-if="timeForm.list.length"
-                      :key="tag"
-                      v-for="tag in timeForm.list"
-                      closable
-                      :disable-transitions="true"
-                      @close="handleCloseTag(tag)">
-                      {{tag}}
-                    </el-tag>
-                  </div>
-                  <el-time-picker
-                    v-if="timeVisible"
-                    class="input-new-tag"
-                    v-model="timeValue"
-                    format="HH:mm"
-                    :picker-options="{
-                      selectableRange: '00:00:00 - 23:59:59'
-                    }"
-                    placeholder="请选择时间"
-                    ref="saveTagInput"
-                    @keyup.enter.native="handlePickerConfirm"
-                    @blur="handlePickerConfirm" />
-                  <el-button
-                    v-else
-                    class="button-new-tag"
-                    icon="iconfont icon-add"
-                    size="small" @click="showTimepicker">添加时间</el-button>
+                  <el-input v-model="instForm.name"></el-input>
                 </el-form-item>
                 <el-form-item class="footer-item">
                   <el-button type="primary" @click="clickStatus==='create'? createData() : updateData()">确定</el-button>
@@ -93,11 +64,12 @@
   </div>
 </template>
 <script>
+import { mapGetters, mapMutations } from 'vuex'
 import bellCard from '@/views/common/card/card'
 import bellPagination from '@/views/common/pagination/pagination'
-import addDialog from '@/views/common/dialog/addDialog'
+import addDialog from '@/views/common/dialog/add'
 import { translateTime } from '@/utils/tools.js'
-import timeAjax from '@/api/time.js'
+import institutionAjax from '@/api/institution.js'
 export default {
   components: {
     bellCard,
@@ -106,9 +78,8 @@ export default {
   },
   data () {
     return {
-      timeVisible: false,
-      timeValue: '',
-      buildingDialog: false,
+      instVisible: false,
+      instValue: '',
       addDialog: false,
       currentPage: 1,
       totalPage: 0,
@@ -121,72 +92,67 @@ export default {
         create: '添加'
       },
       clickStatus: null,
-      timeForm: {
-        name: '',
-        list: []
+      instForm: {
+        name: ''
       },
-      timeId: null,
-      timeLists: []
+      instId: null,
+      institutionLists: []
     }
   },
   created () {
     this.getTimeData()
   },
+  computed: {
+    ...mapGetters(['institution'])
+  },
   methods: {
+    ...mapMutations(['SET_INSTITUTION']),
     getTimeData () {
-      timeAjax.getTimeList({
+      institutionAjax.getInstitutionList({
         page: this.currentPage,
         limit: this.pageSizes.size
       })
         .then(res => {
-          console.log('time', res)
-          this.handleTimeData(res.data)
           this.totalPage = res.total
+          this.handleResData(res.data)
         })
         .catch(err => {
           console.log(err)
         })
     },
-    handleTimeData (res) {
-      let result = res.map(item => {
+    handleResData (res) {
+      this.institutionLists = res.map(item => {
         return {
+          create_time: translateTime(item.create_time).all,
           id: item.id,
-          name: item.name,
-          list: item.content.split(' ')
+          name: item.name
         }
       })
-      console.log('result', result)
-      this.timeLists = result
     },
-    handleCheck (row) {
-      console.log('handleCheck', row)
-      this.timeForm = Object.assign({}, row)
+    handleEdit (row) {
+      this.instForm = Object.assign({}, row)
       this.clickStatus = 'update'
       this.addDialog = true
-      this.timeId = row.id
+      this.instId = row.id
     },
     handleSizeChange (val) {
-      console.log('handleSizeChange', val)
       this.pageSizes.size = val
       this.getTimeData()
     },
     handleCurrentChange (val) {
-      console.log('handleCurrentChange', val)
       this.currentPage = val
       this.getTimeData()
     },
     handleDelete (val) {
-      console.log('delete', val)
-      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+      this.$confirm('确认要删除该机构吗?', '删除确认', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        timeAjax.delTimeList({
+        institutionAjax.delInstitutionList({
           id: val.id
         })
           .then(res => {
-            console.log('del', res)
             this.showMsg('success', '删除成功!')
             this.getTimeData()
           })
@@ -194,7 +160,6 @@ export default {
             console.log(err)
           })
       }).catch(() => {
-        this.showMsg('info', '已取消删除')
       })
     },
     handleAddCancel (val) {
@@ -209,15 +174,16 @@ export default {
       this.resetForm()
     },
     updateData () {
-      let timeForm = this.timeForm
-      if (timeForm.name && timeForm.list.length) {
-        let timeArr = timeForm.list.join(' ')
-        timeAjax.putTimeList({
-          id: this.timeId,
-          name: timeForm.name,
-          content: timeArr
+      if (this.instForm.name) {
+        institutionAjax.putInstitutionList({
+          id: this.instId,
+          name: this.instForm.name
         })
           .then(res => {
+            if (this.institution && this.instId == this.institution.id) {
+              this.institution.name = this.instForm.name
+              this.SET_INSTITUTION(this.institution)
+            }
             this.addDialog = false
             this.showMsg('success', '编辑成功')
             this.getTimeData()
@@ -228,49 +194,46 @@ export default {
       }
     },
     createData () {
-      let timeForm = this.timeForm
-      if (timeForm.name && timeForm.list.length) {
-        let timeArr = timeForm.list.join(' ')
-        timeAjax.addTimeList({
-          name: timeForm.name,
-          content: timeArr
+      if (this.instForm.name) {
+        institutionAjax.addInstitutionList({
+          name: this.instForm.name
         })
           .then(res => {
-            if (res.status === 200) {
-              this.addDialog = false
-              this.showMsg('success', '添加成功')
-              this.getTimeData()
-            }
+            this.addDialog = false
+            this.showMsg('success', '添加成功')
+            this.getTimeData()
           })
           .catch(err => {
             console.log(err)
           })
+      } else {
+        this.showMsg('warning', '请输入名称')
       }
     },
     handleCloseTag (tag) {
-      this.timeForm.list.splice(this.timeForm.list.indexOf(tag), 1)
+      this.instForm.list.splice(this.instForm.list.indexOf(tag), 1)
     },
     showTimepicker () {
-      this.timeVisible = true
-      this.$nextTick(() => {
+      this.instVisible = true
+      this.$nextTick(_ => {
         this.$refs.saveTagInput.focus()
       })
     },
     handlePickerConfirm () {
-      let timeValue = this.timeValue
-      if (timeValue) {
-        let newTimeVal = translateTime(timeValue)
-        if (this.timeForm.list.indexOf(newTimeVal.hm) < 0) {
-          this.timeForm.list.push(newTimeVal.hm)
+      let instValue = this.instValue
+      if (instValue) {
+        let newTimeVal = translateTime(instValue)
+        if (this.instForm.list.indexOf(newTimeVal.hm) < 0) {
+          this.instForm.list.push(newTimeVal.hm)
         } else {
           this.showMsg('warning', '时间已存在')
         }
       }
-      this.timeVisible = false
-      this.timeValue = ''
+      this.instVisible = false
+      this.instValue = ''
     },
     resetForm () {
-      this.timeForm = {
+      this.instForm = {
         name: '',
         list: []
       }
@@ -285,7 +248,7 @@ export default {
 }
 </script>
 <style lang="stylus">
-.build-wrapper
+.institution-wrapper
   .el-button--success
     background-color: #009688;
     border-color #009688
@@ -329,7 +292,7 @@ export default {
       line-height: 30px;
 </style>
 <style lang='stylus' scoped>
-.build-wrapper
+.institution-wrapper
   position: relative;
   min-height 100%
   height auto
@@ -338,7 +301,7 @@ export default {
   .page-wrapper
     margin-top 20px
   .add-dialog .content
-    .time-add
+    .inst-add
       display inline-block
       cursor pointer
       vertical-align middle

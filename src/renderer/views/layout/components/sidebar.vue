@@ -2,7 +2,7 @@
   <div class="bell-side bell-side-menu" :class="{'isHideMenu': sidebar}">
     <div class="bell-logo">
       <img v-show="sidebar" :src="logoUrl" alt="logo">
-      <span v-if="userInfo && userInfo.institution">{{userInfo.institution.name}}</span>
+      <span v-if="institution">{{institution.name}}</span>
     </div>
     <el-menu
       :default-active="defaultActive"
@@ -37,44 +37,44 @@
 import { mapGetters } from 'vuex'
 export default {
   computed: {
-    ...mapGetters(['sidebar', 'userInfo'])
+    ...mapGetters(['sidebar', 'userInfo', 'institution'])
   },
   data () {
     return {
-      defaultActive: this.$route.path || '/home/mainControl',
+      defaultActive: this.$route.path || '/dashboard/mechine',
       logoUrl: require('@/assets/logo.png'),
       roleMenu: null,
       menuList: [{
         id: '1',
         icon: 'icon-home',
-        name: '主页',
+        name: '控制台',
         children: [{
-          index: '/home/mainControl',
+          index: '/dashboard/mechine',
           name: '主控机管理'
         }, {
-          index: '/home/building',
-          name: '时间表'
+          index: '/dashboard/schedule',
+          name: '时间表管理'
         }]
       }, {
         id: '2',
         icon: 'icon-userManage',
         name: '高级管理',
         children: [{
-          index: '/home/userManage',
+          index: '/admin/user',
           name: '用户管理'
         }, {
-          index: '/home/institution',
+          index: '/admin/institution',
           name: '机构管理'
         }]
       }, {
         id: '3',
         icon: 'icon-shezhi',
-        name: '设置',
+        name: '个人设置',
         children: [{
-          index: '/home/profile',
+          index: '/user/update/profile',
           name: '修改资料'
         }, {
-          index: '/home/set',
+          index: '/user/update/password',
           name: '修改密码'
         }]
       }]

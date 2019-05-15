@@ -98,7 +98,7 @@
 <script>
 import bellCard from '@/views/common/card/card'
 import bellPagination from '@/views/common/pagination/pagination'
-import addDialog from '@/views/common/dialog/addDialog'
+import addDialog from '@/views/common/dialog/add'
 import userAjax from '@/api/user.js'
 export default {
   components: {
@@ -206,7 +206,7 @@ export default {
       this.resetForm()
     },
     handleDelete (data) {
-      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+      this.$confirm('确认要删除该用户吗?', '删除确认', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -222,7 +222,6 @@ export default {
             console.log(err)
           })
       }).catch(() => {
-        this.showMsg('info', '已取消删除')
       })
     },
     handleSizeChange (val) {

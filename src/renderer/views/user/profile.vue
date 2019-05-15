@@ -68,7 +68,7 @@ export default {
         if (valid) {
           loginAjax.updateProfileInfo(this.form)
             .then(res => {
-              this.showMsg('success', '修改成功 ^_^')
+              this.showMsg('success', '修改成功')
               this.SET_NICKNAME(this.form.nickname)
             })
             .catch(err => {

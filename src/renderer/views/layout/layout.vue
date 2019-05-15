@@ -1,23 +1,23 @@
 <template>
   <div class="home-wrapper">
-    <bell-header />
-    <bell-menu />
-    <bell-body>
-      <router-view slot="bellcontent" />
-    </bell-body>
+    <layout-header />
+    <layout-sidebar />
+    <layout-body>
+      <router-view slot="layout-body-slot" />
+    </layout-body>
   </div>
 </template>
 
 <script>
-import bellHeader from './components/bellHeader'
-import bellMenu from './components/bellMenu'
-import bellBody from './components/bellContent'
+import layoutHeader from './components/header'
+import layoutSidebar from './components/sidebar'
+import layoutBody from './components/body'
 export default {
   name: 'home',
   components: {
-    bellMenu,
-    bellHeader,
-    bellBody
+    layoutHeader,
+    layoutSidebar,
+    layoutBody
   },
   data () {
     return {

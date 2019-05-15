@@ -137,7 +137,7 @@
 <script>
 import bellCard from '@/views/common/card/card'
 import bellPagination from '@/views/common/pagination/pagination'
-import addDialog from '@/views/common/dialog/addDialog'
+import addDialog from '@/views/common/dialog/add'
 import { translateTime } from '@/utils/tools.js'
 import homeAjax from '@/api/home.js'
 export default {
@@ -265,7 +265,7 @@ export default {
       this.resetForm()
     },
     handleDelete (val) {
-      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+      this.$confirm('确认要删除该主控机吗?', '删除确认', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -281,7 +281,6 @@ export default {
             console.log(err)
           })
       }).catch(() => {
-        this.showMsg('info', '已取消删除')
       })
     },
     handleSizeChange (val) {
@@ -303,7 +302,7 @@ export default {
     createData () {
       homeAjax.addControllers(this.controlForm)
         .then(res => {
-          this.showMsg('success', '添加成功 ^_^')
+          this.showMsg('success', '添加成功')
           this.initController()
           this.addDialog = false
         })
@@ -314,7 +313,7 @@ export default {
     updateData () {
       homeAjax.putControllers(this.controlForm)
         .then(res => {
-          this.showMsg('success', '更新成功 ^_^')
+          this.showMsg('success', '更新成功')
           this.initController()
           this.addDialog = false
         })
@@ -344,7 +343,7 @@ export default {
           id: row.id
         })
           .then(res => {
-            this.showMsg('success', '打铃成功 ^_^')
+            this.showMsg('success', '打铃成功')
             this.initController()
           })
           .catch(err => {
@@ -364,7 +363,7 @@ export default {
         time: translateTime(this.timingTemp.time).hm
       })
         .then(res => {
-          this.showMsg('success', '打铃成功 ^_^')
+          this.showMsg('success', '打铃成功')
           this.initController()
           this.timingFormVisible = false
         })
@@ -385,7 +384,7 @@ export default {
         id: data.id
       })
         .then(res => {
-          this.showMsg('success', '断开成功 ^_^')
+          this.showMsg('success', '断开成功')
           this.iniData()
         })
         .catch(err => {

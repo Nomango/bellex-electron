@@ -4,7 +4,8 @@ import { getToken, setToken, removeToken } from '@/utils/auth'
 const user = {
   state: {
     token: getToken(),
-    userInfo: null
+    userInfo: null,
+    institution: null
   },
 
   mutations: {
@@ -16,6 +17,9 @@ const user = {
     },
     SET_USERINFO: (state, user) => {
       state.userInfo = user
+    },
+    SET_INSTITUTION: (state, institution) => {
+      state.institution = institution
     }
   },
 
@@ -39,6 +43,7 @@ const user = {
       return new Promise((resolve, reject) => {
         getInfo(state.token).then(data => {
           commit('SET_USERINFO', data.user)
+          commit('SET_INSTITUTION', data.user.institution)
           resolve(data)
         }).catch(error => {
           reject(error)
