@@ -1,8 +1,9 @@
 {
   "name": "bellex",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Nomango <569629550@qq.com>",
-  "description": "An electron-vue project for Bellex",
+  "description": "智铃校园后台管理系统",
+  "homepage": "http://www.bellex.cn",
   "license": null,
   "main": "./dist/electron/main.js",
   "scripts": {
@@ -20,6 +21,8 @@
   },
   "build": {
     "productName": "智铃校园后台管理系统",
+    "artifactName": "${productName}_setup_${version}.${ext}",
+    "copyright": "Copyright © 2019 ${author}",
     "appId": "cn.bellex.nomango",
     "directories": {
       "output": "build"
