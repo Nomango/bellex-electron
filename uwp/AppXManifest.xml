@@ -23,7 +23,7 @@
     <rescap:Capability Name="runFullTrust"/>
   </Capabilities>
   <Applications>
-    <Application Id="bellex" Executable="app\智铃校园后台管理系统.exe" EntryPoint="Windows.FullTrustApplication">
+    <Application Id="bellex" Executable="app\bellex.exe" EntryPoint="Windows.FullTrustApplication">
       <uap:VisualElements
        BackgroundColor="#464646"
        DisplayName="bellex"

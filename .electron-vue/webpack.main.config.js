@@ -5,6 +5,7 @@ process.env.BABEL_ENV = 'main'
 const path = require('path')
 const { dependencies } = require('../package.json')
 const webpack = require('webpack')
+const config = require('../config/index.js')
 
 const BabiliWebpackPlugin = require('babili-webpack-plugin')
 
@@ -49,6 +50,9 @@ let mainConfig = {
     path: path.join(__dirname, '../dist/electron')
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env': process.env.NODE_ENV === 'production' ? config.build.env : config.dev.env
+    }),
     new webpack.NoEmitOnErrorsPlugin()
   ],
   resolve: {
