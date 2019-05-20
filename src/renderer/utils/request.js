@@ -30,14 +30,14 @@ service.interceptors.response.use(
   },
   error => {
     NProgress.done()
-    console.log('err ' + error)// for debug
-    if (error.response) {
+    console.log('axios error ', error)// for debug
+    if (error && error.response && error.response.data) {
       Message.error({
         message: error.response.data.message
       })
     } else {
       Message.error({
-        message: '未知异常！'
+        message: '网络异常'
       })
     }
     return Promise.reject(error)

@@ -62,7 +62,7 @@ export default {
         this.showMask = false
         this.$message({
           type: 'warning',
-          message: `检查更新失败: ${error}`
+          message: `检查更新失败`
         })
       })
   },

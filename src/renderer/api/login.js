@@ -35,6 +35,7 @@ export function getInfo (token) {
     url: '/user/status',
     method: 'get',
     params: { token }
+  }).catch(() => {
   })
 }
 
@@ -42,5 +43,6 @@ export function logout () {
   return request({
     url: '/user/logout',
     method: 'post'
+  }).catch(() => {
   })
 }
