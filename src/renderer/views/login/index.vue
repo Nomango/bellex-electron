@@ -6,7 +6,7 @@
         <span class="svg-container svg-container_login">
           <svg-icon icon-class="user" />
         </span>
-        <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="用户名或邮箱" />
+        <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="用户名或邮箱" autofocus="true"/>
       </el-form-item>
       <el-form-item prop="password">
         <span class="svg-container">
@@ -15,6 +15,9 @@
         <el-input name="password" :type="pwdType" @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="on"
           placeholder="密码"></el-input>
           <span class="show-pwd" @click="showPwd"><svg-icon icon-class="eye" /></span>
+      </el-form-item>
+      <el-form-item class="forget-item">
+        <el-checkbox v-model="remeberAccount">记住账号</el-checkbox>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" style="width:100%;" :loading="loading" @click.native.prevent="handleLogin">
@@ -55,8 +58,18 @@ export default {
         password: [{ required: true, trigger: 'blur', validator: validatePass }]
       },
       loading: false,
-      pwdType: 'password'
+      pwdType: 'password',
+      remeberAccount: false,
+      cookies: this.$electron.remote.session.defaultSession.cookies
     }
+  },
+  created () {
+    this.getCookie('username', cookies => {
+      if (cookies.length && cookies[0].value) {
+        this.loginForm.username = cookies[0].value
+        this.remeberAccount = true
+      }
+    })
   },
   methods: {
     showPwd () {
@@ -66,9 +79,41 @@ export default {
         this.pwdType = 'password'
       }
     },
+    setCookie (key, value) {
+      let days = 7
+      let exp = new Date()
+      let date = Math.round(exp.getTime() / 1000) + days * 24 * 60 * 60
+      this.cookies.set({
+        url: 'http://www.bellex.cn',
+        name: key,
+        value: value,
+        expirationDate: date
+      }, error => {
+        if (error) {
+          console.log('set cookie failed', error)
+        }
+      })
+    },
+    getCookie (key, callback) {
+      this.cookies.get({ url: 'http://www.bellex.cn', name: key }, (error, cookies) => {
+        if (error) {
+          console.log('get cookie failed', error)
+        } else {
+          callback(cookies)
+        }
+      })
+    },
+    removeCookie (key) {
+      this.cookies.remove('http://www.bellex.cn', key, () => {})
+    },
     handleLogin () {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
+          if (this.remeberAccount) {
+            this.setCookie('username', this.loginForm.username)
+          } else {
+            this.removeCookie('username')
+          }
           this.loading = true
           this.$store.dispatch('Login', this.loginForm).then(() => {
             this.loading = false
@@ -116,6 +161,14 @@ $light_gray:#eee;
     border-radius: 5px;
     color: #454545;
   }
+  .forget-item{
+    .el-form-item__content{
+      line-height: 20px;
+    }
+    .el-checkbox__label{
+      color: #889aa4;
+    }
+  }
 }
 
 </style>
@@ -136,6 +189,13 @@ $light_gray:#eee;
     width: 520px;
     padding: 35px 35px 15px 35px;
     margin: 120px auto;
+    .forget-item {
+      text-align: left;
+      text-indent: 1px;
+      overflow: hidden;
+      border: none;
+      background: transparent;
+    }
   }
   .tips {
     font-size: 14px;
